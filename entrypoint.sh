@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Verificar se o Vite está instalado corretamente
 echo "Verificando instalação do Vite..."
 if ! command -v vite &> /dev/null
@@ -10,11 +9,10 @@ else
     echo "Vite encontrado!"
 fi
 
-# Rodar o servidor Vite
-echo "Iniciando o servidor Vite..."
-cd /var/www/html
-npm run dev &  # Inicia o Vite em segundo plano
+# Rodando as migrações do Laravel
+echo "Rodando migrações..."
+php artisan migrate --force
 
-# Iniciar o Apache
+# Iniciando o Apache
 echo "Iniciando o Apache..."
 apache2-foreground
