@@ -55,6 +55,3 @@ RUN mkdir -p /var/www/html/database && \
     chown -R www-data:www-data /var/www/html/database
 
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Rodar as migrações do Laravel
-RUN php artisan migrate --force
