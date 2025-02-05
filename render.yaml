@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: laravel-app
+    runtime: docker
+    repo: https://github.com/seu-usuario/seu-repo
+    plan: free
+    envVars:
+      - key: APP_KEY
+        sync: false
+      - key: APP_ENV
+        value: production
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: your-db-host
+      - key: DB_DATABASE
+        value: your-db-name
+      - key: DB_USERNAME
+        value: your-db-user
+      - key: DB_PASSWORD
+        sync: false
+    disk:
+      name: storage
+      mountPath: /var/www/html/storage
+      sizeGB: 1
