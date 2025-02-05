@@ -67,9 +67,6 @@ RUN mkdir -p /var/www/html/database && \
     touch /var/www/html/database/database.sqlite && \
     chown -R www-data:www-data /var/www/html/database
 
-# Rodar as migrações do Laravel
-RUN php artisan migrate --force
-
 # Copiar e configurar o entrypoint.sh
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
