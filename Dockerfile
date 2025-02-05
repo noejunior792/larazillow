@@ -21,7 +21,10 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    libsqlite3-dev  # Adicionando suporte ao SQLite
+    libsqlite3-dev  
+
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs    
 
 
 RUN a2enmod rewrite
