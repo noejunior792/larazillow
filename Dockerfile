@@ -23,9 +23,9 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libsqlite3-dev  
 
-# Instalar Node.js e npm
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt-get install -y nodejs    
+# Instalar Node.js versão 20
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs 
 
 RUN a2enmod rewrite
 
