@@ -51,5 +51,3 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 EXPOSE 80
 
 RUN php artisan migrate --force
-# Start Apache in foreground
-CMD ["apache2-foreground"]
