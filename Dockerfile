@@ -1,7 +1,7 @@
-# Imagem base do PHP
+# Usa uma imagem do PHP com FPM
 FROM php:8.2-fpm
 
-# Instala dependências necessárias
+# Instala dependências do sistema
 RUN apt-get update && apt-get install -y \
     zip unzip curl libpng-dev libjpeg-dev libfreetype6-dev \
     libonig-dev libxml2-dev sqlite3 libsqlite3-dev \
@@ -13,14 +13,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Define o diretório de trabalho
 WORKDIR /var/www/html
 
-# Copia os arquivos para o container
+# Copia os arquivos do Laravel para o container
 COPY . .
 
 # Instala as dependências do Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Define permissões para a pasta de cache do Laravel
+# Define permissões corretas
 RUN chmod -R 777 storage bootstrap/cache
 
-# Define o comando padrão para rodar o PHP-FPM
-CMD ["php-fpm"]
+# Expor a porta 8080
+EXPOSE 8080
+
+# Inicia o servidor Laravel na porta 8080
+CMD php artisan serve --host=0.0.0.0 --port=8080
