@@ -1,35 +1,55 @@
-# Usa uma imagem do PHP com FPM
+# Build stage for Node
+FROM node:20-alpine as node-builder
+WORKDIR /app
+COPY package*.json ./
+COPY vite.config.js ./
+COPY resources ./resources
+RUN npm install
+RUN npm run build
+
+# PHP stage
 FROM php:8.2-fpm
 
-# Instala dependências do sistema
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    zip unzip curl libpng-dev libjpeg-dev libfreetype6-dev \
-    libonig-dev libxml2-dev sqlite3 libsqlite3-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    nginx
 
-# RUN a2enmod rewrite
-# ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-# RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-# RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
-
-# Instala o Composer
+# Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Define o diretório de trabalho
+# Set working directory
 WORKDIR /var/www/html
 
-# Copia os arquivos do Laravel para o container
+# Copy Laravel files
 COPY . .
+COPY --from=node-builder /app/public/build ./public/build
 
-# Instala as dependências do Laravel
+# Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Define permissões corretas
-RUN chmod -R 777 storage bootstrap/cache
+# Generate Laravel key
+RUN php artisan key:generate
 
-# Expor a porta 8080
-EXPOSE 8080
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage \
+    && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Inicia o servidor Laravel na porta 8080
-CMD php artisan serve --host=0.0.0.0 --port=8080
+# Configure Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx & PHP-FPM
+CMD service nginx start && php-fpm
