@@ -1,15 +1,14 @@
 #!/bin/bash
-# Atribuindo permissão ao diretório de armazenamento
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Rodando as migrações do Laravel
-echo "Rodando migrações..."
-php artisan migrate --force
+# Verificar se o Vite está instalado corretamente
+echo "Verificando instalação do Vite..."
+vite --version || { echo "Vite não encontrado! Instalando..."; npm install -g vite; }
 
-# Iniciando o servidor Vite
+# Rodar o servidor Vite
 echo "Iniciando o servidor Vite..."
-npm run dev &  # Isso vai rodar o servidor Vite em segundo plano
+cd /var/www/html
+npm run dev &  # Inicia o Vite em segundo plano
 
-# Iniciando o Apache
+# Iniciar o Apache
 echo "Iniciando o Apache..."
 apache2-foreground
