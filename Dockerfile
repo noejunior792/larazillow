@@ -54,7 +54,11 @@ RUN mkdir -p /var/www/html/database && \
     touch /var/www/html/database/database.sqlite && \
     chown -R www-data:www-data /var/www/html/database
 
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Copiar o script entrypoint.sh para o container
+COPY entrypoint.sh /entrypoint.sh
 
-# Rodar as migrações do Laravel
-RUN php artisan migrate --force
+# Dar permissão de execução para o script
+RUN chmod +x /entrypoint.sh
+
+# Alterar o comando de inicialização do container para usar o entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
