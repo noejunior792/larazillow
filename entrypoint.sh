@@ -2,7 +2,13 @@
 
 # Verificar se o Vite está instalado corretamente
 echo "Verificando instalação do Vite..."
-vite --version || { echo "Vite não encontrado! Instalando..."; npm install -g vite; }
+if ! command -v vite &> /dev/null
+then
+    echo "Vite não encontrado! Instalando..."
+    npm install vite --save-dev
+else
+    echo "Vite encontrado!"
+fi
 
 # Rodar o servidor Vite
 echo "Iniciando o servidor Vite..."

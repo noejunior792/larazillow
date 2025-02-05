@@ -7,10 +7,6 @@ COPY vite.config.js ./
 COPY resources ./resources
 
 RUN npm install
-
-# Instalar o Vite globalmente
-RUN npm install -g vite
-
 RUN npm run build
 
 
@@ -30,9 +26,6 @@ RUN apt-get update && apt-get install -y \
 # Instalar Node.js e npm
 RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get install -y nodejs    
-
-# Instalar Vite globalmente
-RUN npm install -g vite
 
 RUN a2enmod rewrite
 
