@@ -8,7 +8,7 @@ RUN npm install
 RUN npm run build
 
 # PHP stage
-FROM php:8.2-fpm
+FROM php:8.2-apache
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -18,8 +18,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip \
-    nginx
+    unzip
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
@@ -42,11 +41,11 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Configure Nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
 
 # Expose port 80
 EXPOSE 80
 
-# Start Nginx & PHP-FPM
-CMD service nginx start && php-fpm
+# Start Apache in foreground
+CMD ["apache2-foreground"]
